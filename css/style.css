@@ -1,0 +1,42 @@
+/* Navegador */
+.navbar .form-control {
+  height: 45px;
+  font-size: 14px;
+}
+
+.navbar-nav .nav-link {
+  font-size: 14px;
+}
+
+/* Hero Section */
+.hero-section {
+  background-size: cover;
+  width: 100%;
+  height: 30rem;
+  color: Black;
+  margin-bottom: 9rem;
+  position: relative;
+  z-index: 0;
+}
+
+.hero-section .container {
+  height: 100%;
+  z-index: 1;
+  position: relative;
+}
+
+.hero-section p{
+    color: gray;
+}
+
+.outside-btn {
+  width: auto;
+}
+
+.carousel-control-prev {
+  left: -5rem;
+}
+
+.carousel-control-next {
+  right: -5rem;
+}
