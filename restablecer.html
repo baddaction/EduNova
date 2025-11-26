@@ -38,7 +38,7 @@
                 <ul class="navbar-nav ms-lg-auto mb-2 mb-lg-0 d-flex align-items-center">
                     <li class="nav-item">
                         <a class="nav-link" href="login.html">
-                            <i class="bi bi-person"></i> Iniciar Sesión
+                            <i class="bi bi-person"></i> Iniciar Sesión / Perfil
                         </a>
                     </li>
                     <li class="nav-item ms-2">
@@ -64,68 +64,70 @@
 
 
     <!-- Restablecer contraseña -->
-<section class="vh-100">
-    <div class="container py-2 h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                <div class="card bg-dark text-white" style="border-radius: 1rem;">
-                    <div class="card-body p-5 text-center">
+    <section class="vh-100">
+        <div class="container py-2 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                    <div class="card bg-dark text-white" style="border-radius: 1rem;">
+                        <div class="card-body p-5 text-center">
 
-                        <!-- ALERT POPUP -->
-                        <div id="alertBox" class="alert alert-danger d-none" role="alert"></div>
+                            <!-- ALERT POPUP -->
+                            <div id="alertBox" class="alert alert-danger d-none" role="alert"></div>
 
-                        <!-- PASO 1: INGRESAR CORREO -->
-                        <div id="step1">
-                            <h2 class="fw-bold mb-2 text-uppercase">Restablecer contraseña</h2>
-                            <p class="text-white-50 mb-5">Ingresa tu correo para enviarte un código</p>
+                            <!-- PASO 1: INGRESAR CORREO -->
+                            <div id="step1">
+                                <h2 class="fw-bold mb-2 text-uppercase">Restablecer contraseña</h2>
+                                <p class="text-white-50 mb-5">Ingresa tu correo para enviarte un código</p>
 
-                            <div class="form-outline form-white mb-4">
-                                <input type="email" id="resetEmail" class="form-control form-control-lg" />
-                                <label class="form-label" for="resetEmail">Correo</label>
+                                <div class="form-outline form-white mb-4">
+                                    <input type="email" id="resetEmail" class="form-control form-control-lg" />
+                                    <label class="form-label" for="resetEmail">Correo</label>
+                                </div>
+
+                                <button class="btn btn-outline-light btn-lg px-5" onclick="sendCode()">Enviar
+                                    código</button>
                             </div>
 
-                            <button class="btn btn-outline-light btn-lg px-5" onclick="sendCode()">Enviar código</button>
+                            <!-- PASO 2: INGRESAR CÓDIGO -->
+                            <div id="step2" class="d-none">
+                                <h2 class="fw-bold mb-2 text-uppercase">Verificación</h2>
+                                <p class="text-white-50 mb-5">Ingresa el código que enviamos a tu correo</p>
+
+                                <div class="form-outline form-white mb-4">
+                                    <input type="text" id="resetCode" class="form-control form-control-lg" />
+                                    <label class="form-label" for="resetCode">Código</label>
+                                </div>
+
+                                <button class="btn btn-outline-light btn-lg px-5" onclick="verifyCode()">Validar
+                                    código</button>
+                            </div>
+
+                            <!-- PASO 3: NUEVA CONTRASEÑA -->
+                            <div id="step3" class="d-none">
+                                <h2 class="fw-bold mb-2 text-uppercase">Nueva contraseña</h2>
+                                <p class="text-white-50 mb-5">Ingresa tu nueva contraseña</p>
+
+                                <div class="form-outline form-white mb-4">
+                                    <input type="password" id="newPass" class="form-control form-control-lg" />
+                                    <label class="form-label" for="newPass">Nueva contraseña</label>
+                                </div>
+
+                                <div class="form-outline form-white mb-4">
+                                    <input type="password" id="confirmPass" class="form-control form-control-lg" />
+                                    <label class="form-label" for="confirmPass">Confirmar contraseña</label>
+                                </div>
+
+                                <button class="btn btn-outline-light btn-lg px-5" onclick="changePass()">
+                                    Cambiar contraseña
+                                </button>
+                            </div>
+
                         </div>
-
-                        <!-- PASO 2: INGRESAR CÓDIGO -->
-                        <div id="step2" class="d-none">
-                            <h2 class="fw-bold mb-2 text-uppercase">Verificación</h2>
-                            <p class="text-white-50 mb-5">Ingresa el código que enviamos a tu correo</p>
-
-                            <div class="form-outline form-white mb-4">
-                                <input type="text" id="resetCode" class="form-control form-control-lg" />
-                                <label class="form-label" for="resetCode">Código</label>
-                            </div>
-
-                            <button class="btn btn-outline-light btn-lg px-5" onclick="verifyCode()">Validar código</button>
-                        </div>
-
-                        <!-- PASO 3: NUEVA CONTRASEÑA -->
-                        <div id="step3" class="d-none">
-                            <h2 class="fw-bold mb-2 text-uppercase">Nueva contraseña</h2>
-                            <p class="text-white-50 mb-5">Ingresa tu nueva contraseña</p>
-
-                            <div class="form-outline form-white mb-4">
-                                <input type="password" id="newPass" class="form-control form-control-lg" />
-                                <label class="form-label" for="newPass">Nueva contraseña</label>
-                            </div>
-
-                            <div class="form-outline form-white mb-4">
-                                <input type="password" id="confirmPass" class="form-control form-control-lg" />
-                                <label class="form-label" for="confirmPass">Confirmar contraseña</label>
-                            </div>
-
-                            <button class="btn btn-outline-light btn-lg px-5" onclick="changePass()">
-                                Cambiar contraseña
-                            </button>
-                        </div>
-
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
 
