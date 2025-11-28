@@ -1,3 +1,9 @@
+/* Globales */
+.margin-cards {
+  margin-bottom: 2.5rem;
+}
+
+
 /* Navegador */
 .navbar .form-control {
   height: 45px;
@@ -214,4 +220,14 @@
 
 .precio-card button:hover {
   background: #0056b3;
+}
+
+/* Administrador de Cursos */
+#formularioCurso {
+  border-radius: 10px;
+}
+
+.table td,
+.table th {
+  vertical-align: middle;
 }
