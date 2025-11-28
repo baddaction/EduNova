@@ -1,6 +1,4 @@
 // Administrador de Cursos
-
-
 let cursosArchivos = [
     {
         id: 1,
