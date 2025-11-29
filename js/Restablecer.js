@@ -1,59 +1,116 @@
-// Restablecer contraseña
+// Variable para recordar el correo durante los pasos
+let currentEmail = "";
 
-// Mostrar popup de error
-function showError(msg) {
+// Mostrar popup de error o éxito
+function showMessage(msg, isError = true) {
     const alertBox = document.getElementById("alertBox");
     alertBox.textContent = msg;
+    alertBox.classList.remove("d-none", "alert-danger", "alert-success");
+
+    // Color según tipo de mensaje
+    if (isError) {
+        alertBox.classList.add("alert-danger");
+    } else {
+        alertBox.classList.add("alert-success");
+    }
+
     alertBox.classList.remove("d-none");
 
+    // Ocultar a los 5 segundos
     setTimeout(() => {
         alertBox.classList.add("d-none");
-    }, 3000);
+    }, 5000);
 }
 
-// PASO 1
+// ENVIAR CÓDIGO
 function sendCode() {
-    const email = document.getElementById("resetEmail").value.trim();
+    const emailInput = document.getElementById("resetEmail");
+    const email = emailInput.value.trim();
 
     if (email === "") {
-        showError("Por favor ingresa tu correo.");
+        showMessage("Por favor ingresa tu correo.");
         return;
     }
 
-    // Simula envío
-    document.getElementById("step1").classList.add("d-none");
-    document.getElementById("step2").classList.remove("d-none");
+    fetch('php/enviar_codigo.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                currentEmail = email; // Guardamos el correo 
+                showMessage(data.message, false); // Muestra el código en verde
+
+                // Cambiar de pantalla
+                document.getElementById("step1").classList.add("d-none");
+                document.getElementById("step2").classList.remove("d-none");
+            } else {
+                showMessage(data.message);
+            }
+        })
+        .catch(err => showMessage("Error de conexión."));
 }
 
-// PASO 2
+// VERIFICAR CÓDIGO
 function verifyCode() {
-    const code = document.getElementById("resetCode").value.trim();
+    const codeInput = document.getElementById("resetCode");
+    const code = codeInput.value.trim();
 
     if (code === "") {
-        showError("Por favor ingresa el código.");
+        showMessage("Por favor ingresa el código.");
         return;
     }
 
-    // Simula validación
-    document.getElementById("step2").classList.add("d-none");
-    document.getElementById("step3").classList.remove("d-none");
+    fetch('php/verificar_codigo.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: currentEmail, code: code })
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showMessage("Código validado.", false);
+                document.getElementById("step2").classList.add("d-none");
+                document.getElementById("step3").classList.remove("d-none");
+            } else {
+                showMessage(data.message);
+            }
+        })
+        .catch(err => showMessage("Error de conexión."));
 }
 
-// PASO 3
+// CAMBIAR CONTRASEÑA
 function changePass() {
     const pass1 = document.getElementById("newPass").value.trim();
     const pass2 = document.getElementById("confirmPass").value.trim();
 
     if (pass1 === "" || pass2 === "") {
-        showError("Por favor ingresa y confirma tu contraseña.");
+        showMessage("Por favor ingresa y confirma tu contraseña.");
         return;
     }
 
     if (pass1 !== pass2) {
-        showError("Las contraseñas no coinciden.");
+        showMessage("Las contraseñas no coinciden.");
         return;
     }
 
-    // Simula cambio de contraseña
-    window.location.href = "login.html";
+    fetch('php/cambiar_password.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: currentEmail, password: pass1 })
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showMessage("¡Contraseña cambiada! Redirigiendo...", false);
+                setTimeout(() => {
+                    window.location.href = "login.html";
+                }, 2000);
+            } else {
+                showMessage(data.message);
+            }
+        })
+        .catch(err => showMessage("Error de conexión."));
 }
