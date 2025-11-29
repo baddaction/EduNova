@@ -12,7 +12,7 @@ try {
     //Configurar PDO para lanzar excepciones en caso de error
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    echo "¡Conexión exitosa a la base de datos Edunova!";
+    // echo "¡Conexión exitosa a la base de datos Edunova!";
 
 } catch (PDOException $e) {
     // Si algo falla, mostramos el error (en producción no debes mostrar detalles técnicos)
