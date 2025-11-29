@@ -88,6 +88,14 @@
                                     <input type="text" id="typeNameX" class="form-control form-control-lg" />
                                     <label class="form-label" for="typeNameX">Nombre completo</label>
                                 </div>
+                                <div class="mb-4">
+                                    <select id="typeRoleX" class="form-select form-select-lg"
+                                        aria-label="Selecciona tu rol">
+                                        <option value="" disabled selected>¿Qué quieres ser?</option>
+                                        <option value="alumno">Soy Alumno</option>
+                                        <option value="maestro">Soy Maestro</option>
+                                    </select>
+                                </div>
                                 <button data-mdb-button-init data-mdb-ripple-init
                                     class="btn btn-outline-light btn-lg px-5" type="submit">Continuar</button>
                                 <div class="d-flex justify-content-center text-center mt-4 pt-1">
@@ -126,7 +134,8 @@
                 <!-- NECESITAS AYUDA -->
                 <div class="col-md-3 mb-4">
                     <h6 class="fw-bold mb-3">¿Necesitas ayuda?</h6>
-                    <a href="contacto.html" class="text-decoration-none text-white"><button class="btn btn-primary px-4">Contáctanos</button></a>
+                    <a href="contacto.html" class="text-decoration-none text-white"><button
+                            class="btn btn-primary px-4">Contáctanos</button></a>
                 </div>
 
                 <!-- CORPORATE INFO -->
@@ -150,10 +159,12 @@
 
         </div>
     </footer>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
+
+    <script src="js/singUp.js"></script>
 </body>
 
 </html>
