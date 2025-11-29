@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    
+
 
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -37,14 +37,35 @@
                 </form>
 
                 <ul class="navbar-nav ms-lg-auto mb-2 mb-lg-0 d-flex align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="login.html">
-                            <i class="bi bi-person"></i> Iniciar Sesión / Perfil
+
+                    <li class="nav-item" id="role-link-container">
+                    </li>
+
+                    <div id="guest-links" class="d-flex">
+                        <li class="nav-item">
+                            <a class="nav-link" href="login.html">
+                                <i class="bi bi-person"></i> Iniciar Sesión
+                            </a>
+                        </li>
+                        <li class="nav-item ms-2">
+                            <a class="nav-link" href="Signup.html">Registrarse</a>
+                        </li>
+                    </div>
+
+                    <div id="user-links" class="d-none dropdown ms-2">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <i class="bi bi-person-circle"></i> <span id="user-name-display">Perfil</span>
                         </a>
-                    </li>
-                    <li class="nav-item ms-2">
-                        <a class="nav-link" href="Signup.html">Registrarse</a>
-                    </li>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="perfil.html">Mi Perfil</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger" href="php/logout.php">Cerrar Sesión</a></li>
+                        </ul>
+                    </div>
+
                 </ul>
             </div>
         </div>
@@ -57,9 +78,6 @@
                 <li class="nav-item"><a class="nav-link text-dark" href="#">Diseño</a></li>
                 <li class="nav-item"><a class="nav-link text-dark" href="#">Programación</a></li>
                 <li class="nav-item"><a class="nav-link text-dark" href="masCursos.html">Más Cursos</a></li>
-                <li class="nav-item"><a class="nav-link text-dark" href="cursosCreados.html">Mis Cursos Creados</a></li>
-                <li class="nav-item"><a class="nav-link text-dark" href="misCursos.html">Mis Cursos</a></li>
-                <li class="nav-item"><a class="nav-link text-dark" href="adminCursos.html">Control del Administrador</a>
                 </li>
 
             </ul>
@@ -71,7 +89,8 @@
         <div class="container d-flex align-items-center justify-content-center fs-1 flex-column">
             <h1>Bienvenidos a EduNova</h1>
             <p class="fs-5 mt-3 fw-light">EduNova es una plataforma de pago por suscripción para cursos en línea.</p>
-            <a href="sobreNosotros.html"><button type="button" class="mt-3 btn text-black border border-3 border-black">Sobre Nosotros</button></a>
+            <a href="sobreNosotros.html"><button type="button"
+                    class="mt-3 btn text-black border border-3 border-black">Sobre Nosotros</button></a>
         </div>
     </section>
 
@@ -260,6 +279,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
+
+    <script src="js/navbar.js"></script>
 </body>
 
 </html>

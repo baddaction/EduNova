@@ -17,7 +17,7 @@
     <nav class="navbar navbar-expand-lg bg-white py-3">
         <div class="container">
 
-            <a class="navbar-brand d-flex align-items-center" href="/index.html">
+            <a class="navbar-brand d-flex align-items-center" href="../index.html">
                 <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" width="28" class="me-2">
                 <strong>EduNova</strong>
             </a>
@@ -36,12 +36,9 @@
 
                 <ul class="navbar-nav ms-lg-auto mb-2 mb-lg-0 d-flex align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="/login.html">
+                        <a class="nav-link" href="alumno.html">
                             <i class="bi bi-person"></i> Perfil
                         </a>
-                    </li>
-                    <li class="nav-item ms-2">
-                        <a class="nav-link" href="/Signup.html">Registrarse</a>
                     </li>
                 </ul>
             </div>
@@ -55,7 +52,7 @@
                 <li class="nav-item"><a class="nav-link text-dark" href="#">Diseño</a></li>
                 <li class="nav-item"><a class="nav-link text-dark" href="#">Programación</a></li>
                 <li class="nav-item"><a class="nav-link text-dark" href="../masCursos.html">Más Cursos</a></li>
-                <li class="nav-item"><a class="nav-link text-dark" href="../cursosCreados.html">Mis Cursos Creados</a></li>
+                <li class="nav-item"><a class="nav-link text-dark" href="../misCursos.html">Mis Cursos</a></li>
             </ul>
         </div>
     </nav>
@@ -94,12 +91,6 @@
                         <div class="d-flex align-items-center mb-3">
                             <span id="phoneText" class="me-2">8126176971</span>
                             <i class="bi bi-pencil-square" style="cursor: pointer;"></i>
-                        </div>
-
-                         <!-- Especialidad -->
-                        <label class="form-label fw-semibold">Especialidad</label>
-                        <div class="d-flex align-items-center mb-3">
-                            <textarea class="form-control mb-3" rows="2" placeholder="Escribe tu especialidad"></textarea>
                         </div>
                         <button class="btn btn-primary mt-3 px-4">Guardar Cambios</button>
                     </div>
