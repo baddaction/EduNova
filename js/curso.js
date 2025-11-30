@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    
+
     const params = new URLSearchParams(window.location.search);
     const idCurso = params.get("id");
     const path = (typeof basePath !== 'undefined') ? basePath : './';
@@ -30,37 +30,41 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("instructorNombre").textContent = curso.instructor;
 
             // LÓGICA DEL BOTÓN DE INSCRIPCIÓN
+            const formResena = document.getElementById("formResenaContainer");
             if (estaInscrito) {
-               // Si ya está inscrito
+                // Si ya está inscrito
                 btnInscribir.textContent = "Ya estás inscrito ✔";
                 btnInscribir.classList.remove("btn-primary");
                 btnInscribir.classList.add("btn-success");
-                btnInscribir.disabled = true; 
+                btnInscribir.disabled = true;
                 const btnForo = document.createElement("a");
                 btnForo.href = path + "foro.php?id=" + idCurso; // Enlace al foro con ID
                 btnForo.className = "btn btn-outline-primary text-black ms-2 mt-3";
                 btnForo.innerHTML = '<i class="bi bi-chat-dots"></i> Foro del Curso';
-                
+
                 // Lo insertamos después del botón de inscripción
                 btnInscribir.parentNode.appendChild(btnForo);
-                // --------------------------------------
+
+                // MOSTRAR FORMULARIO DE RESEÑA
+                if (formResena) formResena.style.display = "block";
             } else {
                 // Si no está inscrito, activamos el evento click
                 btnInscribir.textContent = "Inscribirse Ahora";
-                btnInscribir.onclick = function() {
+                btnInscribir.onclick = function () {
                     inscribirseCurso(idCurso, path);
                 };
+                if (formResena) formResena.style.display = "none";
             }
 
             // Llenar Temario
             const divTemario = document.getElementById("cursoTemario");
-            divTemario.innerHTML = ""; 
+            divTemario.innerHTML = "";
             if (temas.length > 0) {
                 let htmlTemas = '<div class="accordion" id="accordionTemas">';
                 temas.forEach((tema, index) => {
                     // OJO: Podrías ocultar el botón 'Ver Material' aquí si !estaInscrito
                     // Por ahora lo dejamos visible.
-                    let botonArchivo = tema.archivo ? 
+                    let botonArchivo = tema.archivo ?
                         `<div class="mt-2"><a href="${path + tema.archivo}" target="_blank" class="btn btn-sm btn-outline-primary text-black">Ver Material</a></div>` : '';
 
                     htmlTemas += `
@@ -92,18 +96,42 @@ function inscribirseCurso(idCurso, path) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id_curso: idCurso })
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            alert("¡Felicidades! Te has inscrito al curso.");
-            location.reload(); // Recargamos para que el botón cambie a "Inscrito"
-        } else {
-            alert(data.message);
-            // Si dice que debe iniciar sesión, lo mandamos al login
-            if(data.message.includes("iniciar sesión")) {
-                window.location.href = "login.html";
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert("¡Felicidades! Te has inscrito al curso.");
+                location.reload(); // Recargamos para que el botón cambie a "Inscrito"
+            } else {
+                alert(data.message);
+                // Si dice que debe iniciar sesión, lo mandamos al login
+                if (data.message.includes("iniciar sesión")) {
+                    window.location.href = "login.html";
+                }
             }
-        }
-    })
-    .catch(err => console.error(err));
+        })
+        .catch(err => console.error(err));
+}
+
+// EVENTO ENVIAR RESEÑA
+const btnEnviarR = document.getElementById("btnEnviarResena");
+if (btnEnviarR) {
+    btnEnviarR.addEventListener("click", function () {
+        const params = new URLSearchParams(window.location.search);
+        const idCurso = params.get("id");
+        const comentario = document.getElementById("txtResena").value;
+        const path = (typeof basePath !== 'undefined') ? basePath : './';
+
+        fetch(path + 'php/alumno_guardar_resena.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id_curso: idCurso, comentario: comentario })
+        })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                if (data.success) {
+                    document.getElementById("txtResena").value = ""; // Limpiar
+                }
+            });
+    });
 }
