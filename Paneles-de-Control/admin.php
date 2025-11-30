@@ -259,6 +259,7 @@ $ruta = '../';
     <script src="<?php echo $ruta; ?>js/adminValidacion.js?v=2"></script>
     <script src="<?php echo $ruta; ?>js/adminUsuarios.js?v=2"></script>
     <script src="<?php echo $ruta; ?>js/adminResenas.js?v=2"></script>
+    <script src="<?php echo $ruta; ?>js/adminEstadisticas.js?v=2"></script>
 
 </body>
 
