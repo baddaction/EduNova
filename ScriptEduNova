@@ -1,0 +1,395 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 30-11-2025 a las 10:59:59
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Base de datos: `edunova`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `configuracion`
+--
+
+CREATE TABLE `configuracion` (
+  `id` int(11) NOT NULL,
+  `clave` varchar(50) NOT NULL,
+  `valor` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `configuracion`
+--
+
+INSERT INTO `configuracion` (`id`, `clave`, `valor`) VALUES
+(1, 'precio_suscripcion', '199');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `cursos`
+--
+
+CREATE TABLE `cursos` (
+  `id` int(11) NOT NULL,
+  `titulo` varchar(150) NOT NULL,
+  `descripcion` text NOT NULL,
+  `imagen` varchar(250) DEFAULT NULL,
+  `id_instructor` int(11) NOT NULL,
+  `estado` varchar(20) NOT NULL DEFAULT 'activo',
+  `fecha_creacion` datetime NOT NULL DEFAULT current_timestamp(),
+  `motivo_rechazo` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `cursos`
+--
+
+INSERT INTO `cursos` (`id`, `titulo`, `descripcion`, `imagen`, `id_instructor`, `estado`, `fecha_creacion`, `motivo_rechazo`) VALUES
+(4, 'Programacion', 'Curso para aprender a programar', 'img/cursos/1764490434_curso-1.webp', 8, 'activo', '2025-11-30 02:13:54', NULL),
+(5, 'Matematicas Avanzadas', 'Curso para aprender a derivar', 'img/cursos/1764490482_mateportada.jpg', 8, 'activo', '2025-11-30 02:14:42', NULL),
+(6, 'Cocina', 'Aprende a hacer huevos revueltos', 'img/cursos/1764490625_aprender a cocinar.jpg', 8, 'pendiente', '2025-11-30 02:17:05', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `foro_hilos`
+--
+
+CREATE TABLE `foro_hilos` (
+  `id` int(11) NOT NULL,
+  `id_curso` int(11) NOT NULL,
+  `titulo` varchar(200) NOT NULL,
+  `fecha` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `foro_hilos`
+--
+
+INSERT INTO `foro_hilos` (`id`, `id_curso`, `titulo`, `fecha`) VALUES
+(2, 5, 'Duda en codigo', '2025-11-30 03:12:31');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `foro_posts`
+--
+
+CREATE TABLE `foro_posts` (
+  `id` int(11) NOT NULL,
+  `id_hilo` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `mensaje` text NOT NULL,
+  `fecha` datetime NOT NULL DEFAULT current_timestamp(),
+  `parent_post` int(11) DEFAULT NULL,
+  `fijado` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `foro_posts`
+--
+
+INSERT INTO `foro_posts` (`id`, `id_hilo`, `id_usuario`, `mensaje`, `fecha`, `parent_post`, `fijado`) VALUES
+(1, 2, 10, 'Tengo una duda en mi bd', '2025-11-30 03:12:31', NULL, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `inscripciones`
+--
+
+CREATE TABLE `inscripciones` (
+  `id` int(11) NOT NULL,
+  `id_alumno` int(11) NOT NULL,
+  `id_curso` int(11) NOT NULL,
+  `fecha` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `inscripciones`
+--
+
+INSERT INTO `inscripciones` (`id`, `id_alumno`, `id_curso`, `fecha`) VALUES
+(1, 10, 5, '2025-11-30 02:59:59');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `materiales`
+--
+
+CREATE TABLE `materiales` (
+  `id` int(11) NOT NULL,
+  `id_subtema` int(11) NOT NULL,
+  `tipo` varchar(20) NOT NULL,
+  `url` varchar(250) NOT NULL,
+  `titulo` varchar(150) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `resenas`
+--
+
+CREATE TABLE `resenas` (
+  `id` int(11) NOT NULL,
+  `id_curso` int(11) NOT NULL,
+  `id_alumno` int(11) NOT NULL,
+  `comentario` text NOT NULL,
+  `fecha` datetime DEFAULT current_timestamp(),
+  `estado` enum('Pendiente','Aprobada','Rechazada') DEFAULT 'Pendiente'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `resenas`
+--
+
+INSERT INTO `resenas` (`id`, `id_curso`, `id_alumno`, `comentario`, `fecha`, `estado`) VALUES
+(1, 5, 10, 'Increible Curso!!!!!', '2025-11-30 03:56:36', 'Aprobada'),
+(2, 5, 10, 'No me gusto para nada :p', '2025-11-30 03:56:46', 'Pendiente');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `temas`
+--
+
+CREATE TABLE `temas` (
+  `id` int(11) NOT NULL,
+  `id_curso` int(11) NOT NULL,
+  `titulo` varchar(150) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `archivo` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `temas`
+--
+
+INSERT INTO `temas` (`id`, `id_curso`, `titulo`, `descripcion`, `archivo`) VALUES
+(1, 5, 'Fase 1', 'Fase 1 del PIA', 'materiales/1764496417_1795166-216-Fase1-PWEB-Lab.pdf');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuarios`
+--
+
+CREATE TABLE `usuarios` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `contrasena` varchar(200) NOT NULL,
+  `rol` varchar(20) NOT NULL,
+  `estado` varchar(20) NOT NULL DEFAULT 'activo',
+  `reset_code` varchar(10) DEFAULT NULL,
+  `reset_expires` datetime DEFAULT NULL,
+  `fecha_vencimiento` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`id`, `nombre`, `email`, `contrasena`, `rol`, `estado`, `reset_code`, `reset_expires`, `fecha_vencimiento`) VALUES
+(8, 'Alejandro Guevara', 'maestro@uanl.com', '12345', 'maestro', 'activo', NULL, NULL, NULL),
+(9, 'Jesus Guevara', 'admin@test.com', '12345', 'admin', 'activo', NULL, NULL, NULL),
+(10, 'Jose Eduardo', 'alumno@uanl.com', '12345', 'alumno', 'activo', NULL, NULL, '2025-12-30 09:59:44'),
+(11, 'fake name', 'alumnoR@uanl.fake', '12345', 'alumno', 'inactivo', NULL, NULL, NULL);
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `configuracion`
+--
+ALTER TABLE `configuracion`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `clave` (`clave`);
+
+--
+-- Indices de la tabla `cursos`
+--
+ALTER TABLE `cursos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_cursos_instructor` (`id_instructor`);
+
+--
+-- Indices de la tabla `foro_hilos`
+--
+ALTER TABLE `foro_hilos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_foro_hilos_curso` (`id_curso`);
+
+--
+-- Indices de la tabla `foro_posts`
+--
+ALTER TABLE `foro_posts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `parent_post` (`parent_post`),
+  ADD KEY `idx_foro_posts_hilo` (`id_hilo`),
+  ADD KEY `idx_foro_posts_usuario` (`id_usuario`);
+
+--
+-- Indices de la tabla `inscripciones`
+--
+ALTER TABLE `inscripciones`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `UQ_Inscripcion_AlumnoCurso` (`id_alumno`,`id_curso`),
+  ADD KEY `idx_inscripciones_alumno` (`id_alumno`),
+  ADD KEY `idx_inscripciones_curso` (`id_curso`);
+
+--
+-- Indices de la tabla `materiales`
+--
+ALTER TABLE `materiales`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_materiales_subtema` (`id_subtema`);
+
+--
+-- Indices de la tabla `resenas`
+--
+ALTER TABLE `resenas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_alumno` (`id_alumno`),
+  ADD KEY `resenas_ibfk_1` (`id_curso`);
+
+--
+-- Indices de la tabla `temas`
+--
+ALTER TABLE `temas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_temas_curso` (`id_curso`);
+
+--
+-- Indices de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `correo` (`email`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `configuracion`
+--
+ALTER TABLE `configuracion`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `cursos`
+--
+ALTER TABLE `cursos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de la tabla `foro_hilos`
+--
+ALTER TABLE `foro_hilos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `foro_posts`
+--
+ALTER TABLE `foro_posts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `inscripciones`
+--
+ALTER TABLE `inscripciones`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `materiales`
+--
+ALTER TABLE `materiales`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `resenas`
+--
+ALTER TABLE `resenas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `temas`
+--
+ALTER TABLE `temas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `cursos`
+--
+ALTER TABLE `cursos`
+  ADD CONSTRAINT `cursos_ibfk_1` FOREIGN KEY (`id_instructor`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `foro_hilos`
+--
+ALTER TABLE `foro_hilos`
+  ADD CONSTRAINT `foro_hilos_ibfk_1` FOREIGN KEY (`id_curso`) REFERENCES `cursos` (`id`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `foro_posts`
+--
+ALTER TABLE `foro_posts`
+  ADD CONSTRAINT `foro_posts_ibfk_1` FOREIGN KEY (`id_hilo`) REFERENCES `foro_hilos` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `foro_posts_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`),
+  ADD CONSTRAINT `foro_posts_ibfk_3` FOREIGN KEY (`parent_post`) REFERENCES `foro_posts` (`id`) ON DELETE SET NULL;
+
+--
+-- Filtros para la tabla `inscripciones`
+--
+ALTER TABLE `inscripciones`
+  ADD CONSTRAINT `inscripciones_ibfk_1` FOREIGN KEY (`id_curso`) REFERENCES `cursos` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `inscripciones_ibfk_2` FOREIGN KEY (`id_curso`) REFERENCES `cursos` (`id`);
+
+--
+-- Filtros para la tabla `resenas`
+--
+ALTER TABLE `resenas`
+  ADD CONSTRAINT `resenas_ibfk_1` FOREIGN KEY (`id_curso`) REFERENCES `cursos` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `resenas_ibfk_2` FOREIGN KEY (`id_alumno`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `temas`
+--
+ALTER TABLE `temas`
+  ADD CONSTRAINT `temas_ibfk_1` FOREIGN KEY (`id_curso`) REFERENCES `cursos` (`id`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
