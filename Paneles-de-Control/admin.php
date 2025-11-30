@@ -12,7 +12,6 @@ $ruta = '../';
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-    <!-- CORRECCIÓN DE RUTA CSS -->
     <link rel="stylesheet" href="<?php echo $ruta; ?>css/style.css">
 </head>
 
@@ -254,14 +253,13 @@ $ruta = '../';
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
 
-    <script src="<?php echo $ruta; ?>js/adminUsuarios.js"></script>
-    <script src="<?php echo $ruta; ?>js/adminResenas.js"></script>
-    <script src="<?php echo $ruta; ?>js/adminValidacion.js"></script>
-    <script src="<?php echo $ruta; ?>js/adminEstadisticas.js"></script>
-
-    <!-- LÓGICA DEL NAVBAR -->
     <script> const basePath = "<?php echo $ruta; ?>"; </script>
     <script src="<?php echo $ruta; ?>js/navbar.js"></script>
+
+    <script src="<?php echo $ruta; ?>js/adminUsuarios.js"></script>
+    <script src="<?php echo $ruta; ?>js/adminValidacion.js"></script>
+    <script src="<?php echo $ruta; ?>js/adminResenas.js"></script>
+    <script src="<?php echo $ruta; ?>js/adminEstadisticas.js"></script
 
 </body>
 
