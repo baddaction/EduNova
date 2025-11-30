@@ -62,9 +62,11 @@ $ruta = '../';
                             <th>Nombre</th>
                             <th>Email</th>
                             <th>Rol</th>
+                            <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
+
                     <tbody id="tablaUsuarios">
                         <!-- Aquí se agregan usuarios -->
                     </tbody>
@@ -100,6 +102,11 @@ $ruta = '../';
                                             <option>Instructor</option>
                                             <option>Alumno</option>
                                         </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label>Contraseña (opcional al editar)</label>
+                                        <input type="password" class="form-control" id="usuarioPassword">
                                     </div>
 
                                     <button class="btn btn-success" type="submit">Guardar</button>
@@ -249,9 +256,8 @@ $ruta = '../';
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
 
     <script> const basePath = "<?php echo $ruta; ?>"; </script>
     <script src="<?php echo $ruta; ?>js/navbar.js"></script>

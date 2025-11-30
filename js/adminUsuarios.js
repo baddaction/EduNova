@@ -2,51 +2,66 @@
 
 document.addEventListener("DOMContentLoaded", function () {
     // Verificar que estamos en la pestaña correcta antes de llamar
-    if(document.getElementById("tablaUsuarios")) {
+    if (document.getElementById("tablaUsuarios")) {
         cargarUsuarios();
     }
 });
 
 let usuariosCache = [];
 
-// 1. CARGAR USUARIOS
+// CARGAR USUARIOS
 function cargarUsuarios() {
     const tbody = document.getElementById("tablaUsuarios");
     tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Cargando lista...</td></tr>';
 
-    // Usamos basePath que viene desde admin.php
     fetch(basePath + 'php/admin_listar_usuarios.php')
         .then(res => res.json())
         .then(data => {
             tbody.innerHTML = "";
-            
+
             if (data.success && data.usuarios.length > 0) {
                 usuariosCache = data.usuarios;
-                
+
                 data.usuarios.forEach(user => {
-                    // Colores según el rol
+                    // dentro del forEach user
                     let badgeClass = "bg-secondary";
-                    if(user.rol === 'admin') badgeClass = "bg-danger";
-                    if(user.rol === 'maestro') badgeClass = "bg-success";
-                    if(user.rol === 'alumno') badgeClass = "bg-primary";
+                    if (user.rol === 'admin') badgeClass = "bg-danger";
+                    if (user.rol === 'maestro') badgeClass = "bg-success";
+                    if (user.rol === 'alumno') badgeClass = "bg-primary";
+
+                    let estadoBadge = (user.estado && user.estado === 'inactivo')
+                        ? '<span class="badge bg-warning text-dark">Inactivo</span>'
+                        : '<span class="badge bg-success">Activo</span>';
+
+                    let acciones = '';
+                    if (user.estado && user.estado === 'inactivo') {
+                        acciones = `
+                                    <button class="btn btn-success btn-sm" onclick="reactivarUsuario(${user.id})" title="Reactivar">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </button> `;
+                    } else {
+                        acciones = `
+                                    <button class="btn btn-primary btn-sm" onclick="editarUsuario(${user.id})" title="Editar">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="eliminarUsuario(${user.id})" title="Desactivar">
+                                        <i class="bi bi-trash"></i>
+                                    </button> `;
+                    }
 
                     const row = `
-                        <tr>
-                            <td>${user.id}</td>
-                            <td class="fw-bold">${user.nombre}</td>
-                            <td>${user.email}</td>
-                            <td><span class="badge ${badgeClass}">${user.rol}</span></td>
-                            <td>
-                                <button class="btn btn-primary btn-sm" onclick="editarUsuario(${user.id})" title="Editar">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-                                <button class="btn btn-danger btn-sm" onclick="alert('Función eliminar pendiente')" title="Eliminar">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
+                                <tr>
+                                    <td>${user.id}</td>
+                                    <td class="fw-bold">${user.nombre}</td>
+                                    <td>${user.email}</td>
+                                    <td><span class="badge ${badgeClass}">${user.rol}</span></td>
+                                    <td>${estadoBadge}</td>
+                                    <td>
+                                        ${acciones}
+                                    </td>
+                                </tr> `;
                     tbody.innerHTML += row;
+
                 });
             } else {
                 tbody.innerHTML = '<tr><td colspan="5" class="text-center">No hay usuarios registrados.</td></tr>';
@@ -58,54 +73,78 @@ function cargarUsuarios() {
         });
 }
 
-// 2. ABRIR MODAL EDITAR
+// ABRIR MODAL EDITAR
 function editarUsuario(id) {
     const user = usuariosCache.find(u => u.id == id);
-    if(user) {
+    if (user) {
         document.getElementById("usuarioId").value = user.id;
         document.getElementById("usuarioNombre").value = user.nombre;
         document.getElementById("usuarioEmail").value = user.email;
-        document.getElementById("usuarioPassword").value = ""; 
-        
-        let rolSelect = document.getElementById("usuarioRol");
-        // Aseguramos coincidencia minúsculas/mayúsculas
-        let rolBuscado = user.rol.toLowerCase(); 
-        // Mapeo simple si los values del select son Title Case
-        if(rolBuscado === 'admin') rolSelect.value = 'Administrador';
-        else if(rolBuscado === 'maestro') rolSelect.value = 'Instructor'; // O 'Maestro' según tu HTML
-        else if(rolBuscado === 'alumno') rolSelect.value = 'Alumno';
-        else rolSelect.value = rolBuscado; // Intento directo
+        document.getElementById("usuarioPassword").value = "";
 
-        // Mostrar Modal Bootstrap
+        let rolSelect = document.getElementById("usuarioRol");
+
+        switch (user.rol) {
+            case "admin":
+                rolSelect.value = "Administrador";
+                break;
+
+            case "maestro":
+                rolSelect.value = "Instructor"; // coincide con tu <option>
+                break;
+
+            case "alumno":
+                rolSelect.value = "Alumno";
+                break;
+
+            default:
+                rolSelect.value = "Alumno";
+                break;
+        }
+
+        // Mostrar Modal
         const modalElement = document.getElementById('modalUsuario');
         const modal = new bootstrap.Modal(modalElement);
         modal.show();
     }
 }
 
-// 3. LIMPIAR MODAL (Para nuevo usuario)
+// LIMPIAR MODAL 
 function limpiarModalUsuario() {
     document.getElementById("formUsuario").reset();
     document.getElementById("usuarioId").value = "";
 }
 
-// 4. GUARDAR USUARIO
+// GUARDAR USUARIO
 const formUser = document.getElementById("formUsuario");
-if(formUser) {
-    formUser.addEventListener("submit", function(e) {
+if (formUser) {
+    formUser.addEventListener("submit", function (e) {
         e.preventDefault();
 
         const id = document.getElementById("usuarioId").value;
         const nombre = document.getElementById("usuarioNombre").value;
         const email = document.getElementById("usuarioEmail").value;
         const password = document.getElementById("usuarioPassword").value;
-        
+
         // Convertir rol del select a valor de BD
         let rolRaw = document.getElementById("usuarioRol").value;
-        let rol = 'alumno';
-        if(rolRaw === 'Administrador') rol = 'admin';
-        if(rolRaw === 'Instructor' || rolRaw === 'Maestro') rol = 'maestro';
-        if(rolRaw === 'Alumno') rol = 'alumno';
+
+        let rol = "alumno"; // default
+
+        switch (rolRaw) {
+            case "Administrador":
+                rol = "admin";
+                break;
+
+            case "Instructor":
+                rol = "maestro";
+                break;
+
+            case "Alumno":
+                rol = "alumno";
+                break;
+        }
+
 
         const datos = { id, nombre, email, password, rol };
 
@@ -114,13 +153,51 @@ if(formUser) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datos)
         })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                if (data.success) {
+                    location.reload();
+                }
+            })
+            .catch(err => console.error(err));
+    });
+}
+
+// ELIMINAR USUARIO
+function eliminarUsuario(id) {
+    if (!confirm("¿Seguro que deseas desactivar este usuario? Podrás reactivarlo después.")) return;
+
+    fetch(basePath + 'php/admin_eliminar_usuario.php', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id })
+    })
         .then(res => res.json())
         .then(data => {
             alert(data.message);
-            if(data.success) {
-                location.reload(); 
+            if (data.success) {
+                cargarUsuarios();
             }
         })
-        .catch(err => console.error(err));
-    });
+        .catch(err => console.error("Error eliminando usuario:", err));
+}
+
+// REACTIVAR USUARIO
+function reactivarUsuario(id) {
+    if (!confirm("¿Deseas reactivar este usuario?")) return;
+
+    fetch(basePath + 'php/admin_reactivar_usuario.php', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id })
+    })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message);
+            if (data.success) {
+                cargarUsuarios();
+            }
+        })
+        .catch(err => console.error("Error reactivando usuario:", err));
 }
