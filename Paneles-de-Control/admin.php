@@ -142,25 +142,25 @@ $ruta = '../';
 
 
                 <!-- Modal Ver detalles -->
-                <div id="modalDetalles" class="modal">
-                    <div class="modal-content">
-                        <span class="cerrar">&times;</span>
-                        <h3>Detalles del curso</h3>
-                        <p><strong>ID:</strong> <span id="det-id"></span></p>
-                        <p><strong>Título:</strong> <span id="det-titulo"></span></p>
-                        <p><strong>Maestro:</strong> <span id="det-maestro"></span></p>
-                        <p><strong>Archivos enviados:</strong></p>
-                        <ul id="det-archivos"></ul>
-                    </div>
-                </div>
-
-                <!-- Modal Rechazar -->
-                <div id="modalRechazar" class="modal">
-                    <div class="modal-content">
-                        <span class="cerrarR">&times;</span>
-                        <h3>Motivo de rechazo</h3>
-                        <textarea id="motivoRechazo" placeholder="Escribe la razón..." rows="4"></textarea>
-                        <button class="btn-rechazar-confirm" id="btnConfirmarRechazo">Enviar</button>
+                <div class="modal fade" id="modalDetallesCurso" tabindex="-1" aria-labelledby="modalDetallesCursoLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalDetallesCursoLabel">Revisión de Contenido</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body" id="detalles-contenido">
+                                <div class="text-center">
+                                    <div class="spinner-border text-primary" role="status"></div>
+                                    <p>Cargando detalles...</p>
+                                </div>
+                            </div>
+                            <div class="modal-footer" id="modal-footer-acciones">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -249,8 +249,6 @@ $ruta = '../';
                         <button onclick="actualizarPrecio()">Actualizar</button>
                     </div>
                 </div>
-
-
             </div>
 
         </div>
