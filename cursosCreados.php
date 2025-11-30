@@ -25,7 +25,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_rol'] !== 'maestro') {
     <section class="container my-5" style="min-height: 60vh;">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold">Mis Cursos Creados</h2>
-            <a href="crearCurso.php" class="btn btn-primary">
+            <a href="adminCursos.php" class="btn btn-primary">
                 <i class="bi bi-plus-circle"></i> Nuevo Curso
             </a>
         </div>
