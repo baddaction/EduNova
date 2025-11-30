@@ -43,7 +43,7 @@ $ruta = './';
         <div class="card shadow-sm p-4 border-0">
             <div class="row align-items-center">
                 <div class="col-md-3 text-center">
-                    <img id="instructorImagen" class="rounded-circle shadow-sm" src="https://via.placeholder.com/150"
+                    <img id="instructorImagen" class="rounded-circle shadow-sm" src="img/profesor.jpg"
                         alt="Instructor" width="150" height="150">
                 </div>
                 <div class="col-md-9">
