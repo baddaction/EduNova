@@ -60,35 +60,7 @@ $ruta = '../';
             </div>
         </div>
 
-        <!-- Cambio de contraseña -->
-        <div class="container mt-4">
-            <div class="row justify-content-center">
-                <div class="col-12 col-md-8 col-lg-9">
-                    <div class="card p-4" style="border-radius: 10px;">
-                        <h5 class="fw-bold mb-3">Cambiar contraseña</h5>
 
-                        <div class="mb-3">
-                            <label class="form-label">Contraseña actual</label>
-                            <input type="password" id="passActual" class="form-control" />
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Nueva contraseña</label>
-                            <input type="password" id="passNueva" class="form-control" />
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Repite la nueva contraseña</label>
-                            <input type="password" id="passRepite" class="form-control" />
-                        </div>
-
-                        <button class="btn btn-primary w-100" onclick="validarCambioPass()">
-                            Actualizar contraseña
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
 
         <!-- Popup -->
