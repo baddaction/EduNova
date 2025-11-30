@@ -110,9 +110,6 @@ function guardarCurso() {
     let url = path + 'php/maestro_crear_curso.php'; // Por defecto Crear
 
     if (id) {
-        // SI TIENE ID, ES EDICIÓN
-        // formData.append('id', id);
-        // url = path + 'php/maestro_editar_curso.php'; // (Aún no creamos este archivo)
         alert("La función de editar se implementará en el siguiente paso.");
         return;
     }

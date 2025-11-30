@@ -29,6 +29,15 @@ document.addEventListener("DOMContentLoaded", function () {
                         estadoTexto = "Rechazado";
                     }
 
+                    // Condición para mostrar el botón de Foro
+                    let botonForo = '';
+                    if (curso.estado === 'activo') {
+                        botonForo = `
+                            <a href="foro.php?id=${curso.id}" class="btn btn-info text-white flex-grow-1">
+                                <i class="bi bi-chat-dots"></i> Foro
+                            </a>`;
+                    }
+
                     const htmlCard = `
                         <div class="col-md-4 mb-4">
                             <div class="card h-100 shadow-sm border-0">
@@ -46,9 +55,13 @@ document.addEventListener("DOMContentLoaded", function () {
                                     </p>
                                     
                                     <div class="mt-auto d-flex gap-2">
+                                        
+                                        ${botonForo}
+
                                         <a href="administrar_curso.php?id=${curso.id}" class="btn btn-dark flex-grow-1">
                                             <i class="bi bi-gear-fill"></i> Administrar
                                         </a>
+                                        
                                         <a href="curso.php?id=${curso.id}" class="btn btn-outline-secondary text-black">
                                             <i class="bi bi-eye"></i>
                                         </a>
