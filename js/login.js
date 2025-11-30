@@ -108,11 +108,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     setTimeout(() => {
                         // Redirigir al dashboard (o según el rol)
                         if (data.rol === 'admin') {
-                            window.location.href = "Paneles-de-Control/admin.html";
+                            window.location.href = "Paneles-de-Control/admin.php";
                         } if(data.rol === 'alumno') {
-                            window.location.href = "Paneles-de-Control/alumno.html";
+                            window.location.href = "Paneles-de-Control/alumno.php";
                         }if(data.rol === 'maestro'){
-                            window.location.href = "Paneles-de-Control/maestro.html";
+                            window.location.href = "Paneles-de-Control/maestro.php";
                         }
                     }, 1500);
 

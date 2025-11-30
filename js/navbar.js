@@ -1,60 +1,60 @@
 document.addEventListener("DOMContentLoaded", function () {
-
-    // Referencias al HTML
+    
     const guestLinks = document.getElementById("guest-links");
     const userLinks = document.getElementById("user-links");
     const roleContainer = document.getElementById("role-link-container");
     const userNameDisplay = document.getElementById("user-name-display");
 
-    // Consultar al servidor quién está conectado
-    fetch('php/check_session.php')
-        .then(response => response.json())
-        .then(data => {
+    // Definimos la ruta base (si no existe, usa la raíz ./)
+    const path = (typeof basePath !== 'undefined') ? basePath : './';
 
-            if (data.logged_in) {
-                // Usuario logeado
+    fetch(path + 'php/check_session.php')
+    .then(response => response.json())
+    .then(data => {
+        
+        if (data.logged_in) {
+            // Ocultar botones de visitante y mostrar perfil
+            if(guestLinks) guestLinks.classList.add("d-none");
+            if(guestLinks) guestLinks.classList.remove("d-flex");
+            if(userLinks) userLinks.classList.remove("d-none");
+            
+            // Mostrar nombre del usuario
+            if(userNameDisplay) userNameDisplay.textContent = data.nombre;
 
-                // Ocultar botones de login/registro
-                if (guestLinks) guestLinks.classList.add("d-none");
-                if (guestLinks) guestLinks.classList.remove("d-flex");
+            let roleHtml = "";
 
-                // Mostrar menú de perfil
-                if (userLinks) userLinks.classList.remove("d-none");
-
-                // Poner el nombre del usuario
-                if (userNameDisplay) userNameDisplay.textContent = data.nombre;
-
-                // Agrega botones segun rol
-                let roleHtml = "";
-
-                if (data.rol === 'alumno') {
-                    roleHtml = `
-                    <a class="nav-link fw-bold text-primary" href="misCursos.html">
+            // --- AQUÍ ESTÁN LOS CAMBIOS DE ENLACES ---
+            
+            if (data.rol === 'alumno') {
+               
+                roleHtml = `
+                    <a class="nav-link fw-bold text-primary" href="${path}misCursos.php">
                         <i class="bi bi-journal-bookmark"></i> Mis Cursos
                     </a>`;
-                }
-                else if (data.rol === 'maestro') {
-                    roleHtml = `
-                    <a class="nav-link fw-bold text-success" href="cursosCreados.html">
+            } 
+            else if (data.rol === 'maestro') {
+              
+                roleHtml = `
+                    <a class="nav-link fw-bold text-success" href="${path}cursosCreados.php">
                         <i class="bi bi-easel"></i> Mis Cursos Creados
                     </a>`;
-                }
-                else if (data.rol === 'admin') {
-                    roleHtml = `
-                    <a class="nav-link fw-bold text-danger" href="adminCursos.html">
+            } 
+            else if (data.rol === 'admin') {
+               
+                roleHtml = `
+                    <a class="nav-link fw-bold text-danger" href="${path}Paneles-de-Control/admin.php">
                         <i class="bi bi-shield-lock"></i> Panel Admin
                     </a>`;
-                }
-
-                // Inyectar el HTML del rol
-                if (roleContainer) roleContainer.innerHTML = roleHtml;
-
-            } else {
-                // Usuario visitante
-                // Asegurarnos que se vea el Login
-                if (guestLinks) guestLinks.classList.remove("d-none");
-                if (userLinks) userLinks.classList.add("d-none");
             }
-        })
-        .catch(error => console.error("Error validando sesión:", error));
+
+            // Inyectar el botón en el menú
+            if(roleContainer) roleContainer.innerHTML = roleHtml;
+
+        } else {
+            // Si no está logueado, mostrar botones de visitante
+            if(guestLinks) guestLinks.classList.remove("d-none");
+            if(userLinks) userLinks.classList.add("d-none");
+        }
+    })
+    .catch(error => console.error("Error validando sesión:", error));
 });
