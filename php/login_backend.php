@@ -3,7 +3,7 @@
 session_start();
 
 // conexion con base de datos
-require 'conexion.php'; 
+require 'conexion.php';
 
 // Obtener datos del formulario
 $inputJSON = file_get_contents('php://input');
@@ -15,7 +15,7 @@ $response = array(
     'message' => 'Error desconocido.'
 );
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST'){
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $correo = $input['email'] ?? '';
     $password = $input['password'] ?? '';
@@ -26,20 +26,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         exit;
     }
 
-    try{
-        $sql = "SELECT id, nombre, contrasena, rol, estado FROM usuarios WHERE correo = :correo";
+    try {
+        $sql = "SELECT id, nombre, contrasena, rol, estado FROM usuarios WHERE email = :correo";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([':correo' => $correo]);
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // Verificar contraseña
-        if($usuario && $usuario['contrasena'] === $password){
-            
+        if ($usuario && $usuario['contrasena'] === $password) {
+
             // Si el estado NO es activo (!==), entonces mandamos error.
-            if($usuario['estado'] !== 'activo'){
+            if ($usuario['estado'] !== 'activo') {
                 $response['message'] = 'Tu cuenta está suspendida.';
-            }
-            else{
+            } else {
                 // Login exitoso
                 $_SESSION['user_id'] = $usuario['id'];
                 $_SESSION['user_nombre'] = $usuario['nombre'];
@@ -53,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
             $response['message'] = 'Correo o contraseña incorrectos.';
         }
 
-    } catch(Exception $e){
+    } catch (Exception $e) {
         $response['message'] = 'Error en la base de datos: ' . $e->getMessage();
     }
 }

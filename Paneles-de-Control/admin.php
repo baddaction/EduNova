@@ -256,10 +256,8 @@ $ruta = '../';
     <script> const basePath = "<?php echo $ruta; ?>"; </script>
     <script src="<?php echo $ruta; ?>js/navbar.js"></script>
 
-    <script src="<?php echo $ruta; ?>js/adminUsuarios.js"></script>
-    <script src="<?php echo $ruta; ?>js/adminValidacion.js"></script>
-    <script src="<?php echo $ruta; ?>js/adminResenas.js"></script>
-    <script src="<?php echo $ruta; ?>js/adminEstadisticas.js"></script
+    <script src="<?php echo $ruta; ?>js/adminValidacion.js?v=2"></script>
+    <script src="<?php echo $ruta; ?>js/adminUsuarios.js?v=2"></script>
 
 </body>
 

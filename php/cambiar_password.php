@@ -11,7 +11,7 @@ if (empty($pass) || empty($email)) {
 }
 
 // Actualizar contraseña y borrar el código usado
-$sql = "UPDATE usuarios SET contrasena = :pass, reset_code = NULL, reset_expires = NULL WHERE correo = :correo";
+$sql = "UPDATE usuarios SET contrasena = :pass, reset_code = NULL, reset_expires = NULL WHERE email = :correo";
 $stmt = $pdo->prepare($sql);
 
 if ($stmt->execute([':pass' => $pass, ':correo' => $email])) {

@@ -15,14 +15,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = $input['nombre'] ?? '';
     $email = $input['email'] ?? '';
     $password = $input['password'] ?? '';
-    $rol = $input['rol'] ?? 'alumno'; 
+    $rol = $input['rol'] ?? 'alumno';
 
     //Validar que el rol sea válido
     // Si intentan enviar 'admin' u otra cosa, lo forzamos a ser 'alumno'
     $roles_permitidos = ['alumno', 'maestro'];
-    
+
     if (!in_array($rol, $roles_permitidos)) {
-        $rol = 'alumno'; 
+        $rol = 'alumno';
     }
 
     if (empty($nombre) || empty($email) || empty($password)) {
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         // Verificar correo duplicado
-        $checkSql = "SELECT id FROM usuarios WHERE correo = :correo";
+        $checkSql = "SELECT id FROM usuarios WHERE email = :correo";
         $stmtCheck = $pdo->prepare($checkSql);
         $stmtCheck->execute([':correo' => $email]);
 
@@ -41,15 +41,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $response['message'] = 'Este correo ya está registrado.';
         } else {
             // INSERTAR CON EL ROL ELEGIDO
-            $sql = "INSERT INTO usuarios (nombre, correo, contrasena, rol, estado) VALUES (:nombre, :correo, :pass, :rol, 'activo')";
+            $sql = "INSERT INTO usuarios (nombre, email, contrasena, rol, estado) VALUES (:nombre, :correo, :pass, :rol, 'activo')";
             $stmt = $pdo->prepare($sql);
-            
-            if ($stmt->execute([
-                ':nombre' => $nombre,
-                ':correo' => $email,
-                ':pass' => $password,
-                ':rol' => $rol 
-            ])) {
+
+            if (
+                $stmt->execute([
+                    ':nombre' => $nombre,
+                    ':correo' => $email,
+                    ':pass' => $password,
+                    ':rol' => $rol
+                ])
+            ) {
                 $response['success'] = true;
                 $response['message'] = '¡Cuenta de ' . $rol . ' creada con éxito!';
             } else {
