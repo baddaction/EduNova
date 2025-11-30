@@ -1,105 +1,163 @@
-// Administrador de Cursos
-let cursosArchivos = [
-    {
-        id: 1,
-        nombre: "Diseño Web",
-        descripcion: "Curso introductorio sobre HTML, CSS y Bootstrap.",
-        fecha: "2025-10-01",
-        archivos: ["temario.pdf"]
-    },
-    {
-        id: 2,
-        nombre: "JavaScript Intermedio",
-        descripcion: "Funciones, eventos, DOM y lógica de interacción.",
-        fecha: "2025-09-20",
-        archivos: ["ejercicios.zip"]
-    }
-];
+document.addEventListener("DOMContentLoaded", function () {
+    cargarCursos();
+});
 
-// Mostrar cursos en tabla
+// Variable global para guardar los cursos cargados temporalmente (para poder editarlos visualmente)
+let cursosCargados = [];
+
+const path = (typeof basePath !== 'undefined') ? basePath : './';
+
+// CARGAR TABLA (READ)
 function cargarTabla() {
-    let tabla = document.getElementById("tablaCursos");
-    tabla.innerHTML = "";
-
-    cursosArchivos.forEach(curso => {
-        let fila = `
-            <tr>
-                <td>${curso.nombre}</td>
-                <td>${curso.descripcion}</td>
-                <td>${curso.fecha}</td>
-                <td>
-                    <button class="btn btn-warning btn-sm" onclick="editarCurso(${curso.id})">Editar</button>
-                    <button class="btn btn-danger btn-sm" onclick="eliminarCurso(${curso.id})">Eliminar</button>
-                </td>
-            </tr>
-        `;
-
-        tabla.innerHTML += fila;
-    });
+    cargarCursos(); 
 }
 
-// Mostrar formulario para crear nuevo curso
+function cargarCursos() {
+    const tabla = document.getElementById("tablaCursos");
+    
+    // Mostrar mensaje de carga
+    tabla.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Cargando cursos...</td></tr>';
+
+    fetch(path + 'php/maestro_listar_cursos.php')
+        .then(response => response.json())
+        .then(data => {
+            tabla.innerHTML = ""; // Limpiar tabla
+
+            if (data.success && data.cursos.length > 0) {
+                
+                // Guardamos en memoria para usar al dar click en editar
+                cursosCargados = data.cursos;
+
+                data.cursos.forEach(curso => {
+                    // Color según si está aprobado o no
+                    let estadoBadge = '';
+                    if(curso.estado === 'activo') estadoBadge = '<span class="badge bg-success">Aprobado</span>';
+                    else if(curso.estado === 'pendiente') estadoBadge = '<span class="badge bg-warning text-dark">Pendiente</span>';
+                    else estadoBadge = '<span class="badge bg-danger">Rechazado</span>';
+
+                    const row = `
+                        <tr>
+                            <td>
+                                <strong>${curso.titulo}</strong>
+                            </td>
+                            <td>${curso.descripcion.substring(0, 60)}...</td>
+                            <td>${curso.fecha_creacion}</td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="administrar_curso.php?id=${curso.id}" class="btn btn-info btn-sm text-white" title="Gestionar Temas">
+                                        <i class="bi bi-gear"></i> Temas
+                                    </a>
+                                    
+                                    <button class="btn btn-warning btn-sm" onclick="editarCurso(${curso.id})">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    
+                                    <button class="btn btn-danger btn-sm" onclick="eliminarCurso(${curso.id})">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                                <div class="mt-1">${estadoBadge}</div>
+                            </td>
+                        </tr>
+                    `;
+                    tabla.innerHTML += row;
+                });
+            } else {
+                tabla.innerHTML = '<tr><td colspan="4" class="text-center">No has creado cursos aún.</td></tr>';
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            tabla.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Error de conexión con el servidor.</td></tr>';
+        });
+}
+
+// MOSTRAR FORMULARIO
 function mostrarFormulario() {
-    document.getElementById("tituloForm").innerText = "Crear Curso";
-    document.getElementById("cursoId").value = "";
+    const form = document.getElementById("formularioCurso");
+    form.style.display = "block";
+    
+    // Limpiar campos para crear uno nuevo
+    document.getElementById("tituloForm").innerText = "Crear Nuevo Curso";
+    document.getElementById("cursoId").value = ""; // ID vacío = Crear
     document.getElementById("nombreCurso").value = "";
     document.getElementById("descripcionCurso").value = "";
     document.getElementById("archivoCurso").value = "";
-    document.getElementById("formularioCurso").style.display = "block";
 }
 
-// Guardar nuevo o editar existente
+// GUARDAR (CREATE / UPDATE)
 function guardarCurso() {
-    let id = document.getElementById("cursoId").value;
-    let nombre = document.getElementById("nombreCurso").value;
-    let descripcion = document.getElementById("descripcionCurso").value;
-    let archivoInput = document.getElementById("archivoCurso");
-    let archivoNombre = archivoInput.files.length > 0 ? archivoInput.files[0].name : null;
+    const id = document.getElementById("cursoId").value;
+    const nombre = document.getElementById("nombreCurso").value.trim();
+    const descripcion = document.getElementById("descripcionCurso").value.trim();
+    const archivoInput = document.getElementById("archivoCurso");
 
-    if (id) {
-        // Editar curso existente
-        let curso = cursosArchivos.find(c => c.id == id);
-        curso.nombre = nombre;
-        curso.descripcion = descripcion;
-
-        if (archivoNombre) {
-            curso.archivos.push(archivoNombre);
-        }
-
-    } else {
-        // Crear nuevo curso
-        let nuevoCurso = {
-            id: Date.now(),
-            nombre,
-            descripcion,
-            fecha: new Date().toISOString().split("T")[0],
-            archivos: archivoNombre ? [archivoNombre] : []
-        };
-
-        cursosArchivos.push(nuevoCurso);
+    if (nombre === "" || descripcion === "") {
+        alert("Por favor completa el nombre y la descripción.");
+        return;
     }
 
-    document.getElementById("formularioCurso").style.display = "none";
-    cargarTabla();
+    // enviar archivos (imágenes)
+    const formData = new FormData();
+    formData.append('titulo', nombre);
+    formData.append('descripcion', descripcion);
+    
+    if (archivoInput.files.length > 0) {
+        formData.append('imagen', archivoInput.files[0]);
+    }
+
+    // Lógica para saber si es CREAR o EDITAR
+    let url = path + 'php/maestro_crear_curso.php'; // Por defecto Crear
+
+    if (id) {
+        // SI TIENE ID, ES EDICIÓN
+        // formData.append('id', id);
+        // url = path + 'php/maestro_editar_curso.php'; // (Aún no creamos este archivo)
+        alert("La función de editar se implementará en el siguiente paso.");
+        return;
+    }
+
+    // Enviar al Backend
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            document.getElementById("formularioCurso").style.display = "none";
+            cargarCursos(); // Recargar la tabla para ver el nuevo curso
+        } else {
+            alert("Error: " + data.message);
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("Ocurrió un error al intentar guardar.");
+    });
 }
 
-// Editar curso
+// FUNCIONES EXTRA (EDITAR / ELIMINAR)
 function editarCurso(id) {
-    let curso = cursosArchivos.find(c => c.id == id);
+    // Buscamos los datos en el array que cargamos al principio
+    const curso = cursosCargados.find(c => c.id == id);
 
-    document.getElementById("tituloForm").innerText = "Editar Curso";
-    document.getElementById("cursoId").value = curso.id;
-    document.getElementById("nombreCurso").value = curso.nombre;
-    document.getElementById("descripcionCurso").value = curso.descripcion;
-    document.getElementById("archivoCurso").value = "";
-    document.getElementById("formularioCurso").style.display = "block";
+    if (curso) {
+        document.getElementById("tituloForm").innerText = "Editar Curso";
+        document.getElementById("cursoId").value = curso.id;
+        document.getElementById("nombreCurso").value = curso.titulo;
+        document.getElementById("descripcionCurso").value = curso.descripcion;
+        document.getElementById("formularioCurso").style.display = "block";
+        
+        // Hacemos scroll hacia el formulario
+        document.getElementById("formularioCurso").scrollIntoView({ behavior: 'smooth' });
+    }
 }
 
-// Eliminar curso
 function eliminarCurso(id) {
-    cursosArchivos = cursosArchivos.filter(c => c.id !== id);
-    cargarTabla();
+    if(confirm("¿Estás seguro de que quieres eliminar este curso?")) {
+        // Aquí conectaremos con php/maestro_eliminar_curso.php más adelante
+        alert("La función de eliminar se implementará en el siguiente paso.");
+    }
 }
-
-// Inicializar tabla al cargar
-document.addEventListener("DOMContentLoaded", cargarTabla);
