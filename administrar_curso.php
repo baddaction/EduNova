@@ -1,48 +1,24 @@
 <?php
 $ruta = './';
 session_start();
-require 'conexion.php';
 
-// Seguridad: Solo Maestros
+// Seguridad
 if (!isset($_SESSION['user_id']) || $_SESSION['user_rol'] !== 'maestro') {
     header("Location: login.html");
     exit;
 }
 
-$id_maestro = $_SESSION['user_id'];
+//OBTENER Y VALIDAR EL ID DEL CURSO
 $id_curso = $_GET['id'] ?? null;
 
-// Función para manejar el error y redirigir
-function manejar_error($mensaje)
-{
+//Si no hay ID o no es un número, mostrar el error y redirigir
+if (empty($id_curso) || !is_numeric($id_curso)) {
+    // Usamos el script para mostrar el mensaje antes de redirigir
     echo "<script>
-        alert('$mensaje');
+        alert('Curso no especificado.');
         window.location.href='maestro.php';
     </script>";
     exit;
-}
-
-//  VALIDACIÓN BÁSICA DEL ID
-if (empty($id_curso) || !is_numeric($id_curso)) {
-    manejar_error('Curso no especificado o ID inválido.');
-}
-
-try {
-    // VERIFICACIÓN DE PROPIEDAD DEL CURSO
-    $sql = "SELECT id, titulo FROM cursos WHERE id = :id_curso AND id_instructor = :id_maestro";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([':id_curso' => $id_curso, ':id_maestro' => $id_maestro]);
-    $curso = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$curso) {
-        manejar_error('Acceso denegado. El curso no existe o no te pertenece.');
-    }
-
-    $titulo_curso = $curso['titulo'];
-
-} catch (PDOException $e) {
-    error_log("Error de BD al validar curso: " . $e->getMessage());
-    manejar_error('Error de base de datos al cargar el curso.');
 }
 ?>
 <!DOCTYPE html>
@@ -106,8 +82,8 @@ try {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         crossorigin="anonymous"></script>
-    <script>
-        const basePath = "<?php echo $ruta; ?>";
+    <script> 
+        const basePath = "<?php echo $ruta; ?>"; 
         const cursoId = <?php echo json_encode($id_curso); ?>; 
     </script>
     <script src="js/navbar.js"></script>
