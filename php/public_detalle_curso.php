@@ -24,23 +24,20 @@ try {
         exit;
     }
 
-    // 2. Temario (Aún no tenemos tabla 'temas', así que enviamos vacío por ahora para que no falle el JS)
-    // Cuando creemos la tabla 'temas' más adelante, descomentaremos esto.
-    /*
-    $sqlTemas = "SELECT titulo, descripcion FROM temas WHERE id_curso = :id";
+    // TEMARIO 
+    $sqlTemas = "SELECT titulo, descripcion, archivo FROM temas WHERE id_curso = :id ORDER BY id ASC";
     $stmtT = $pdo->prepare($sqlTemas);
     $stmtT->execute([':id' => $id_curso]);
     $temas = $stmtT->fetchAll(PDO::FETCH_ASSOC);
-    */
-    $temas = []; // Array vacío temporal
 
-    // Reseñas (Igual, vacío por ahora)
-    $resenas = [];
+    // 3. Reseñas (Se mantiene igual por ahora)
+    $resenas = []; 
+    // Si ya tienes tabla de reseñas, aquí iría la consulta real.
 
     echo json_encode([
         'success' => true,
         'curso' => $curso,
-        'temas' => $temas,
+        'temas' => $temas,   // Ahora enviamos los temas reales
         'resenas' => $resenas
     ]);
 

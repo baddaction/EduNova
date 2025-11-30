@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Obtener el ID de la URL
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
+    // Definimos path base
     const path = (typeof basePath !== 'undefined') ? basePath : './';
 
     if (!id) {
@@ -24,40 +25,52 @@ document.addEventListener("DOMContentLoaded", function () {
             const temas = data.temas;
             const resenas = data.resenas;
 
-            // Llenar la información en el HTML
-            // Título y Descripción
+            // Llenar la información Principal
             document.getElementById("cursoNombre").textContent = curso.titulo;
             document.getElementById("cursoDescripcion").textContent = curso.descripcion;
             
-            // Imagen
+            // Imagen del curso
             const imgElement = document.getElementById("cursoImagen");
-            // Si la imagen viene de BD usa esa ruta, si no, usa un placeholder
             const rutaImagen = curso.imagen ? path + curso.imagen : 'https://via.placeholder.com/600x400?text=Curso';
             imgElement.src = rutaImagen;
 
-            // Instructor
+            // Datos del Instructor
             document.getElementById("instructorNombre").textContent = curso.instructor;
-            document.getElementById("instructorBio").textContent = "Instructor de EduNova";
-            // Imagen instructor por defecto
+            document.getElementById("instructorBio").textContent = "Instructor certificado de EduNova"; 
             document.getElementById("instructorImagen").src = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
-            // Llenar Temario (Dinámico)
+            // LLENAR TEMARIO (CON ARCHIVOS)
             const divTemario = document.getElementById("cursoTemario");
-            divTemario.innerHTML = ""; // Limpiar
+            divTemario.innerHTML = ""; 
 
             if (temas.length > 0) {
                 let htmlTemas = '<div class="accordion" id="accordionTemas">';
+                
                 temas.forEach((tema, index) => {
+                    // Lógica para mostrar botón de archivo si existe
+                    let botonArchivo = '';
+                    if (tema.archivo) {
+                        botonArchivo = `
+                            <div class="mt-3 pt-3 border-top">
+                                <h6 class="fw-bold text-primary"><i class="bi bi-paperclip"></i> Recursos:</h6>
+                                <a href="${path + tema.archivo}" target="_blank" class="btn btn-outline-primary text-black btn-sm">
+                                    <i class="bi bi-eye"></i> Ver Material
+                                </a>
+                            </div>
+                        `;
+                    }
+
                     htmlTemas += `
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="heading${index}">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${index}">
-                                    ${tema.titulo}
+                                <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${index}">
+                                    ${index + 1}. ${tema.titulo}
                                 </button>
                             </h2>
                             <div id="collapse${index}" class="accordion-collapse collapse" data-bs-parent="#accordionTemas">
                                 <div class="accordion-body">
-                                    ${tema.descripcion || 'Sin descripción.'}
+                                    <p class="text-muted mb-2">${tema.descripcion || 'Sin descripción.'}</p>
+                                    ${botonArchivo}
                                 </div>
                             </div>
                         </div>
@@ -66,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 htmlTemas += '</div>';
                 divTemario.innerHTML = htmlTemas;
             } else {
-                divTemario.innerHTML = '<div class="alert alert-light border">El maestro aún no ha publicado el temario de este curso.</div>';
+                divTemario.innerHTML = '<div class="alert alert-light border text-center">El maestro aún no ha publicado contenido.</div>';
             }
 
             // Llenar Reseñas
@@ -74,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
             divResenas.innerHTML = "";
 
             if (resenas.length > 0) {
-                // Aquí iría el loop de reseñas
+                // Aquí iría el loop de reseñas (pendiente hasta que hagamos esa parte)
             } else {
                 divResenas.innerHTML = '<p class="text-muted">Aún no hay reseñas para este curso.</p>';
             }
@@ -82,6 +95,6 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch(error => {
             console.error(error);
-            alert("Error al cargar los detalles del curso.");
+            // alert("Error al cargar los detalles del curso."); // Comentado para no molestar si hay error menor
         });
 });
