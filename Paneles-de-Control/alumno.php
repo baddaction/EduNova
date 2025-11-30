@@ -60,25 +60,9 @@ $ruta = '../';
             </div>
         </div>
 
-
-
-
-        <!-- Popup -->
-        <div class="modal fade" id="popupMensaje" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content bg-dark text-white">
-                    <div class="modal-body text-center" id="popupTexto"></div>
-                    <div class="modal-footer border-0 justify-content-center">
-                        <button class="btn text-black bg-white" data-bs-dismiss="modal">Aceptar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </section>
-
-
     <!-- Footer -->
-    <?php include 'php/footer.php'; ?>
+    <?php include '../php/footer.php'; ?>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
