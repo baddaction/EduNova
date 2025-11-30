@@ -15,24 +15,30 @@ function cargarEstadisticas() {
                 document.getElementById("cursosActivos").innerText = data.stats.cursos;
                 document.getElementById("suscripcionesActivas").innerText = data.stats.inscripciones;
                 document.getElementById("comentariosTotales").innerText = data.stats.comentarios;
+                
+                // ACTUALIZAR PRECIO VISUAL
+                if (data.stats.precio) {
+                    document.getElementById("precioActual").innerText = `$${data.stats.precio} MXN`;
+                }
             }
         })
         .catch(err => console.error("Error cargando stats:", err));
 }
 
-// Lógica del Precio (Simulada por ahora usando LocalStorage del navegador)
+// Lógica del Precio
 function actualizarPrecio() {
     const nuevoPrecio = document.getElementById("nuevoPrecio").value;
     if (nuevoPrecio) {
-        document.getElementById("precioActual").innerText = `$${nuevoPrecio} MXN`;
-        localStorage.setItem("precioSuscripcion", nuevoPrecio); // Guardar en navegador
-        document.getElementById("nuevoPrecio").value = "";
-        alert("Precio actualizado (Localmente)");
+        fetch(basePath + 'php/admin_estadisticas.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ precio: nuevoPrecio })
+        })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                cargarEstadisticas(); // Recargar para ver el cambio
+                document.getElementById("nuevoPrecio").value = "";
+            });
     }
-}
-
-// Cargar precio guardado al iniciar
-const precioGuardado = localStorage.getItem("precioSuscripcion");
-if (precioGuardado && document.getElementById("precioActual")) {
-    document.getElementById("precioActual").innerText = `$${precioGuardado} MXN`;
 }
