@@ -1,38 +1,87 @@
-// Obtener id desde la URL
-const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
+document.addEventListener("DOMContentLoaded", function () {
+    
+    // Obtener el ID de la URL
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    const path = (typeof basePath !== 'undefined') ? basePath : './';
 
-// Buscar el curso
-const curso = cursosFalsos.find(c => c.id == id);
+    if (!id) {
+        alert("No se especificó ningún curso.");
+        window.location.href = "masCursos.php";
+        return;
+    }
 
-// Si no existe, mostrar error
-if (!curso) {
-    document.body.innerHTML = "<h1>Curso no encontrado</h1>";
-    throw new Error("Curso no existe");
-}
+    // Pedir datos al servidor
+    fetch(path + 'php/public_detalle_curso.php?id=' + id)
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                document.querySelector(".container").innerHTML = `<h2 class='text-center mt-5'>${data.message}</h2>`;
+                return;
+            }
 
-// Llenar datos del curso
-document.getElementById("cursoNombre").textContent = curso.nombre;
-document.getElementById("cursoDescripcion").textContent = curso.descripcion;
-document.getElementById("cursoImagen").src = curso.imagen;
+            const curso = data.curso;
+            const temas = data.temas;
+            const resenas = data.resenas;
 
-// Instructor
-document.getElementById("instructorNombre").textContent = curso.instructor.nombre;
-document.getElementById("instructorBio").textContent = curso.instructor.bio;
-document.getElementById("instructorImagen").src = curso.instructor.imagen;
+            // Llenar la información en el HTML
+            // Título y Descripción
+            document.getElementById("cursoNombre").textContent = curso.titulo;
+            document.getElementById("cursoDescripcion").textContent = curso.descripcion;
+            
+            // Imagen
+            const imgElement = document.getElementById("cursoImagen");
+            // Si la imagen viene de BD usa esa ruta, si no, usa un placeholder
+            const rutaImagen = curso.imagen ? path + curso.imagen : 'https://via.placeholder.com/600x400?text=Curso';
+            imgElement.src = rutaImagen;
 
-// Temario
-const temarioUl = document.getElementById("cursoTemario");
-curso.temario.forEach(t => {
-    const li = document.createElement("li");
-    li.textContent = t;
-    temarioUl.appendChild(li);
-});
+            // Instructor
+            document.getElementById("instructorNombre").textContent = curso.instructor;
+            document.getElementById("instructorBio").textContent = "Instructor de EduNova";
+            // Imagen instructor por defecto
+            document.getElementById("instructorImagen").src = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
-// Reseñas
-const reseñasDiv = document.getElementById("cursoReseñas");
-curso.reseñas.forEach(r => {
-    const p = document.createElement("p");
-    p.innerHTML = `<strong>${r.usuario}:</strong> ${r.comentario}`;
-    reseñasDiv.appendChild(p);
+            // Llenar Temario (Dinámico)
+            const divTemario = document.getElementById("cursoTemario");
+            divTemario.innerHTML = ""; // Limpiar
+
+            if (temas.length > 0) {
+                let htmlTemas = '<div class="accordion" id="accordionTemas">';
+                temas.forEach((tema, index) => {
+                    htmlTemas += `
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading${index}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${index}">
+                                    ${tema.titulo}
+                                </button>
+                            </h2>
+                            <div id="collapse${index}" class="accordion-collapse collapse" data-bs-parent="#accordionTemas">
+                                <div class="accordion-body">
+                                    ${tema.descripcion || 'Sin descripción.'}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                htmlTemas += '</div>';
+                divTemario.innerHTML = htmlTemas;
+            } else {
+                divTemario.innerHTML = '<div class="alert alert-light border">El maestro aún no ha publicado el temario de este curso.</div>';
+            }
+
+            // Llenar Reseñas
+            const divResenas = document.getElementById("cursoReseñas");
+            divResenas.innerHTML = "";
+
+            if (resenas.length > 0) {
+                // Aquí iría el loop de reseñas
+            } else {
+                divResenas.innerHTML = '<p class="text-muted">Aún no hay reseñas para este curso.</p>';
+            }
+
+        })
+        .catch(error => {
+            console.error(error);
+            alert("Error al cargar los detalles del curso.");
+        });
 });
