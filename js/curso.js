@@ -1,100 +1,101 @@
 document.addEventListener("DOMContentLoaded", function () {
     
-    // Obtener el ID de la URL
     const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-    // Definimos path base
+    const idCurso = params.get("id");
     const path = (typeof basePath !== 'undefined') ? basePath : './';
 
-    if (!id) {
-        alert("No se especificó ningún curso.");
+    if (!idCurso) {
         window.location.href = "masCursos.php";
         return;
     }
 
-    // Pedir datos al servidor
-    fetch(path + 'php/public_detalle_curso.php?id=' + id)
+    // Referencias al botón
+    const btnInscribir = document.getElementById("btnInscribirse");
+
+    // CARGAR DATOS
+    fetch(path + 'php/public_detalle_curso.php?id=' + idCurso)
         .then(response => response.json())
         .then(data => {
-            if (!data.success) {
-                document.querySelector(".container").innerHTML = `<h2 class='text-center mt-5'>${data.message}</h2>`;
-                return;
-            }
+            if (!data.success) return;
 
             const curso = data.curso;
             const temas = data.temas;
-            const resenas = data.resenas;
+            const estaInscrito = data.inscrito; // true o false
 
-            // Llenar la información Principal
+            // Llenar info básica
             document.getElementById("cursoNombre").textContent = curso.titulo;
             document.getElementById("cursoDescripcion").textContent = curso.descripcion;
-            
-            // Imagen del curso
             const imgElement = document.getElementById("cursoImagen");
-            const rutaImagen = curso.imagen ? path + curso.imagen : 'https://via.placeholder.com/600x400?text=Curso';
-            imgElement.src = rutaImagen;
-
-            // Datos del Instructor
+            imgElement.src = curso.imagen ? path + curso.imagen : 'https://via.placeholder.com/600x400';
             document.getElementById("instructorNombre").textContent = curso.instructor;
-            document.getElementById("instructorBio").textContent = "Instructor certificado de EduNova"; 
-            document.getElementById("instructorImagen").src = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
-            // LLENAR TEMARIO (CON ARCHIVOS)
+            // LÓGICA DEL BOTÓN DE INSCRIPCIÓN
+            if (estaInscrito) {
+                // Si ya está inscrito
+                btnInscribir.textContent = "Ya estás inscrito ✔";
+                btnInscribir.classList.remove("btn-primary");
+                btnInscribir.classList.add("btn-success");
+                btnInscribir.disabled = true; // Deshabilitamos el click
+            } else {
+                // Si no está inscrito, activamos el evento click
+                btnInscribir.textContent = "Inscribirse Ahora";
+                btnInscribir.onclick = function() {
+                    inscribirseCurso(idCurso, path);
+                };
+            }
+
+            // Llenar Temario
             const divTemario = document.getElementById("cursoTemario");
             divTemario.innerHTML = ""; 
-
             if (temas.length > 0) {
                 let htmlTemas = '<div class="accordion" id="accordionTemas">';
-                
                 temas.forEach((tema, index) => {
-                    // Lógica para mostrar botón de archivo si existe
-                    let botonArchivo = '';
-                    if (tema.archivo) {
-                        botonArchivo = `
-                            <div class="mt-3 pt-3 border-top">
-                                <h6 class="fw-bold text-primary"><i class="bi bi-paperclip"></i> Recursos:</h6>
-                                <a href="${path + tema.archivo}" target="_blank" class="btn btn-outline-primary text-black btn-sm">
-                                    <i class="bi bi-eye"></i> Ver Material
-                                </a>
-                            </div>
-                        `;
-                    }
+                    // OJO: Podrías ocultar el botón 'Ver Material' aquí si !estaInscrito
+                    // Por ahora lo dejamos visible.
+                    let botonArchivo = tema.archivo ? 
+                        `<div class="mt-2"><a href="${path + tema.archivo}" target="_blank" class="btn btn-sm btn-outline-primary text-black">Ver Material</a></div>` : '';
 
                     htmlTemas += `
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="heading${index}">
-                                <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${index}">
-                                    ${index + 1}. ${tema.titulo}
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${index}">
+                                    ${tema.titulo}
                                 </button>
                             </h2>
-                            <div id="collapse${index}" class="accordion-collapse collapse" data-bs-parent="#accordionTemas">
-                                <div class="accordion-body">
-                                    <p class="text-muted mb-2">${tema.descripcion || 'Sin descripción.'}</p>
+                            <div id="collapse${index}" class="accordion-collapse collapse">
+                                <div class="accordion-body text-muted">
+                                    ${tema.descripcion}
                                     ${botonArchivo}
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 });
-                htmlTemas += '</div>';
-                divTemario.innerHTML = htmlTemas;
+                divTemario.innerHTML = htmlTemas + '</div>';
             } else {
-                divTemario.innerHTML = '<div class="alert alert-light border text-center">El maestro aún no ha publicado contenido.</div>';
+                divTemario.innerHTML = '<p class="text-muted">Sin temas.</p>';
             }
-
-            // Llenar Reseñas
-            const divResenas = document.getElementById("cursoReseñas");
-            divResenas.innerHTML = "";
-
-            if (resenas.length > 0) {
-                // Aquí iría el loop de reseñas (pendiente hasta que hagamos esa parte)
-            } else {
-                divResenas.innerHTML = '<p class="text-muted">Aún no hay reseñas para este curso.</p>';
-            }
-
-        })
-        .catch(error => {
-            console.error(error);
-            // alert("Error al cargar los detalles del curso."); // Comentado para no molestar si hay error menor
         });
 });
+
+// FUNCIÓN PARA INSCRIBIRSE
+function inscribirseCurso(idCurso, path) {
+    fetch(path + 'php/alumno_inscribir.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id_curso: idCurso })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert("¡Felicidades! Te has inscrito al curso.");
+            location.reload(); // Recargamos para que el botón cambie a "Inscrito"
+        } else {
+            alert(data.message);
+            // Si dice que debe iniciar sesión, lo mandamos al login
+            if(data.message.includes("iniciar sesión")) {
+                window.location.href = "login.html";
+            }
+        }
+    })
+    .catch(err => console.error(err));
+}

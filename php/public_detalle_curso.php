@@ -1,17 +1,19 @@
 <?php
+session_start(); // Iniciamos sesión para saber quién ve la página
 require 'conexion.php';
 header('Content-Type: application/json');
 
 $id_curso = $_GET['id'] ?? null;
+$id_usuario = $_SESSION['user_id'] ?? null; // ID del usuario actual (si existe)
 
 if (!$id_curso) {
-    echo json_encode(['success' => false, 'message' => 'Falta el ID del curso']);
+    echo json_encode(['success' => false, 'message' => 'Falta el ID']);
     exit;
 }
 
 try {
-    // Datos del Curso e Instructor
-    $sql = "SELECT c.id, c.titulo, c.descripcion, c.imagen, c.fecha_creacion, u.nombre as instructor 
+    // Datos del Curso
+    $sql = "SELECT c.id, c.titulo, c.descripcion, c.imagen, u.nombre as instructor 
             FROM cursos c
             JOIN usuarios u ON c.id_instructor = u.id
             WHERE c.id = :id";
@@ -24,20 +26,32 @@ try {
         exit;
     }
 
-    // TEMARIO 
+    // Validacion para saber si el usuario está inscrito
+    $inscrito = false;
+    if ($id_usuario) {
+        $sqlCheck = "SELECT id FROM inscripciones WHERE id_alumno = :alumno AND id_curso = :curso";
+        $stmtCheck = $pdo->prepare($sqlCheck);
+        $stmtCheck->execute([':alumno' => $id_usuario, ':curso' => $id_curso]);
+        if ($stmtCheck->rowCount() > 0) {
+            $inscrito = true;
+        }
+    }
+
+    // Temas (Solo enviamos los archivos si está inscrito o es el instructor)
+    // Por ahora enviamos todo para probar, luego podemos restringir.
     $sqlTemas = "SELECT titulo, descripcion, archivo FROM temas WHERE id_curso = :id ORDER BY id ASC";
     $stmtT = $pdo->prepare($sqlTemas);
     $stmtT->execute([':id' => $id_curso]);
     $temas = $stmtT->fetchAll(PDO::FETCH_ASSOC);
 
-    // 3. Reseñas (Se mantiene igual por ahora)
-    $resenas = []; 
-    // Si ya tienes tabla de reseñas, aquí iría la consulta real.
+    // Reseñas
+    $resenas = []; // Pendiente de implementar tabla reseñas
 
     echo json_encode([
         'success' => true,
         'curso' => $curso,
-        'temas' => $temas,   // Ahora enviamos los temas reales
+        'inscrito' => $inscrito, // ESTO ES NUEVO
+        'temas' => $temas,
         'resenas' => $resenas
     ]);
 
