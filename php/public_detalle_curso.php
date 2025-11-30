@@ -38,19 +38,25 @@ try {
     }
 
     // Temas 
-    // luego podemos restringir.
     $sqlTemas = "SELECT titulo, descripcion, archivo FROM temas WHERE id_curso = :id ORDER BY id ASC";
     $stmtT = $pdo->prepare($sqlTemas);
     $stmtT->execute([':id' => $id_curso]);
     $temas = $stmtT->fetchAll(PDO::FETCH_ASSOC);
 
-    // Reseñas
-    $resenas = []; // Pendiente de implementar tabla reseñas
+    // 4. RESEÑAS
+    $sqlRes = "SELECT r.comentario, r.fecha, u.nombre as usuario 
+               FROM resenas r
+               JOIN usuarios u ON r.id_alumno = u.id
+               WHERE r.id_curso = :id AND r.estado = 'Aprobada'
+               ORDER BY r.fecha DESC";
+    $stmtR = $pdo->prepare($sqlRes);
+    $stmtR->execute([':id' => $id_curso]);
+    $resenas = $stmtR->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
         'success' => true,
         'curso' => $curso,
-        'inscrito' => $inscrito, // ESTO ES NUEVO
+        'inscrito' => $inscrito,
         'temas' => $temas,
         'resenas' => $resenas
     ]);
