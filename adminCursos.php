@@ -1,3 +1,14 @@
+<?php
+$ruta = './';
+session_start();
+
+// Seguridad: Solo maestros
+// Si intentan entrar sin ser maestro, los mandamos al login
+if (!isset($_SESSION['user_id']) || $_SESSION['user_rol'] !== 'maestro') {
+    header("Location: login.html");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,18 +20,21 @@
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="<?php echo $ruta; ?>css/style.css">
 </head>
 
 <body>
-    <!-- Navegador -->
     <?php include 'php/navbar.php'; ?>
 
     <section>
         <div class="container mt-4">
-            <button class="btn btn-success mb-3" onclick="mostrarFormulario()">Crear Nuevo Curso</button>
+            <h2 class="mb-4">Gestión de Mis Cursos</h2>
 
-            <table class="table table-bordered table-hover">
+            <button class="btn btn-success mb-3" onclick="mostrarFormulario()">
+                <i class="bi bi-plus-lg"></i> Crear Nuevo Curso
+            </button>
+
+            <table class="table table-bordered table-hover shadow-sm bg-white">
                 <thead class="table-dark">
                     <tr>
                         <th>Nombre del Curso</th>
@@ -30,77 +44,61 @@
                     </tr>
                 </thead>
 
-                <tbody id="tablaCursos"></tbody>
+                <tbody id="tablaCursos">
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">Cargando cursos...</td>
+                    </tr>
+                </tbody>
             </table>
 
-            <!-- Formulario Crear/Editar -->
-            <div id="formularioCurso" class="card p-4 mt-4" style="display:none;">
-                <h4 id="tituloForm">Crear / Editar Curso</h4>
+            <div id="formularioCurso" class="card p-4 mt-4 shadow"
+                style="display:none; border-left: 5px solid #198754;">
+                <div class="d-flex justify-content-between mb-3">
+                    <h4 id="tituloForm" class="m-0">Crear / Editar Curso</h4>
+                    <button class="btn-close"
+                        onclick="document.getElementById('formularioCurso').style.display='none'"></button>
+                </div>
 
                 <input type="hidden" id="cursoId">
 
-                <input type="text" id="nombreCurso" class="form-control mb-3" placeholder="Nombre del curso">
+                <div class="mb-3">
+                    <label class="form-label">Nombre del curso</label>
+                    <input type="text" id="nombreCurso" class="form-control" placeholder="Ej: Matemáticas Avanzadas">
+                </div>
 
-                <textarea id="descripcionCurso" class="form-control mb-3" rows="3"
-                    placeholder="Descripción del curso"></textarea>
+                <div class="mb-3">
+                    <label class="form-label">Descripción</label>
+                    <textarea id="descripcionCurso" class="form-control" rows="3"
+                        placeholder="Describe de qué trata el curso..."></textarea>
+                </div>
 
-                <input type="file" id="archivoCurso" class="form-control mb-3">
+                <div class="mb-3">
+                    <label class="form-label">Imagen de Portada</label>
+                    <input type="file" id="archivoCurso" class="form-control">
+                </div>
 
-                <button class="btn btn-primary" onclick="guardarCurso()">Guardar Curso</button>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-primary" onclick="guardarCurso()">Guardar Curso</button>
+                    <button class="btn btn-secondary"
+                        onclick="document.getElementById('formularioCurso').style.display='none'">Cancelar</button>
+                </div>
             </div>
         </div>
 
     </section>
 
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-5 mt-5">
-        <div class="container">
-
-            <div class="row align-items-start">
-
-                <!-- LOGO -->
-                <div class="col-md-3 mb-4 d-flex align-items-center">
-                    <i class="bi bi-house m-3 " style="font-size: 2rem; color:white"></i>
-                    <span class="fs-4 fw-semibold">EduNova</span>
-                </div>
-
-                <!-- NECESITAS AYUDA -->
-                <div class="col-md-3 mb-4">
-                    <h6 class="fw-bold mb-3">¿Necesitas ayuda?</h6>
-                    <a href="contacto.html" class="text-decoration-none text-white"><button
-                            class="btn btn-primary px-4">Contáctanos</button></a>
-                </div>
-
-                <!-- CORPORATE INFO -->
-                <div class="col-md-3 mb-4">
-                    <h6 class="fw-bold mb-3">Corporate Info</h6>
-                    <a href="sobreNosotros.html" class="text-white-50 text-decoration-none d-block mb-2">Sobre
-                        Nosotros</a>
-                </div>
-
-                <!-- REDES SOCIALES -->
-                <div class="col-md-3 text-md-end">
-
-                    <a href="#" class="text-white me-3 fs-5"><i class="bi bi-instagram"></i></a>
-                    <a href="#" class="text-white me-3 fs-5"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="text-white me-3 fs-5"><i class="bi bi-youtube"></i></a>
-                    <a href="#" class="text-white fs-5"><i class="bi bi-twitter"></i></a>
-
-                </div>
-
-            </div>
-
-        </div>
-    </footer>
+    <?php include 'php/footer.php'; ?>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
-    <script src="js/maestroAdminCursos.js"></script>
-    
-    <script src="js/navbar.js"></script>
+
+    <script src="<?php echo $ruta; ?>js/maestroAdminCursos.js"></script>
+
+    <script> const basePath = "<?php echo $ruta; ?>"; </script>
+    <script src="<?php echo $ruta; ?>js/navbar.js"></script>
 </body>
 
 </html>

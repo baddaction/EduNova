@@ -15,12 +15,13 @@
             </form>
 
             <ul class="navbar-nav ms-lg-auto mb-2 mb-lg-0 d-flex align-items-center">
-                
+
                 <li class="nav-item d-flex align-items-center" id="role-link-container"></li>
 
                 <div id="guest-links" class="d-flex">
                     <li class="nav-item">
-                        <a class="nav-link" href="<?php echo $ruta; ?>login.html"><i class="bi bi-person"></i> Iniciar Sesión</a>
+                        <a class="nav-link" href="<?php echo $ruta; ?>login.html"><i class="bi bi-person"></i> Iniciar
+                            Sesión</a>
                     </li>
                     <li class="nav-item ms-2">
                         <a class="nav-link" href="<?php echo $ruta; ?>Signup.html">Registrarse</a>
@@ -32,9 +33,14 @@
                         <i class="bi bi-person-circle"></i> <span id="user-name-display">Perfil</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="<?php echo $ruta; ?>perfil.php">Mi Perfil</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="<?php echo $ruta; ?>php/logout.php">Cerrar Sesión</a></li>
+
+                        <li><a class="dropdown-item" id="profile-link" href="#">Mi Perfil</a></li>
+
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item text-danger" href="<?php echo $ruta; ?>php/logout.php">Cerrar
+                                Sesión</a></li>
                     </ul>
                 </div>
             </ul>
@@ -49,7 +55,8 @@
             <li class="nav-item"><a class="nav-link text-dark" href="#">Contabilidad</a></li>
             <li class="nav-item"><a class="nav-link text-dark" href="#">Diseño</a></li>
             <li class="nav-item"><a class="nav-link text-dark" href="#">Programación</a></li>
-            <li class="nav-item"><a class="nav-link text-dark" href="<?php echo $ruta; ?>masCursos.php">Más Cursos</a></li>
+            <li class="nav-item"><a class="nav-link text-dark" href="<?php echo $ruta; ?>masCursos.php">Más Cursos</a>
+            </li>
         </ul>
     </div>
 </nav>
