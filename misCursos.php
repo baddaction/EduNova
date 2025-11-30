@@ -1,9 +1,8 @@
 <?php
-// 1. Estamos en la raíz
 $ruta = './';
 session_start();
 
-// 2. Seguridad: Solo Alumnos
+// Seguridad: Solo Alumnos
 if (!isset($_SESSION['user_id']) || $_SESSION['user_rol'] !== 'alumno') {
     header("Location: login.html");
     exit;

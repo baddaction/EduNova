@@ -37,8 +37,8 @@ try {
         }
     }
 
-    // Temas (Solo enviamos los archivos si está inscrito o es el instructor)
-    // Por ahora enviamos todo para probar, luego podemos restringir.
+    // Temas 
+    // luego podemos restringir.
     $sqlTemas = "SELECT titulo, descripcion, archivo FROM temas WHERE id_curso = :id ORDER BY id ASC";
     $stmtT = $pdo->prepare($sqlTemas);
     $stmtT->execute([':id' => $id_curso]);

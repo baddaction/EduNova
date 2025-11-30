@@ -31,11 +31,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // LÓGICA DEL BOTÓN DE INSCRIPCIÓN
             if (estaInscrito) {
-                // Si ya está inscrito
+               // Si ya está inscrito
                 btnInscribir.textContent = "Ya estás inscrito ✔";
                 btnInscribir.classList.remove("btn-primary");
                 btnInscribir.classList.add("btn-success");
-                btnInscribir.disabled = true; // Deshabilitamos el click
+                btnInscribir.disabled = true; 
+                const btnForo = document.createElement("a");
+                btnForo.href = path + "foro.php?id=" + idCurso; // Enlace al foro con ID
+                btnForo.className = "btn btn-outline-primary text-black ms-2 mt-3";
+                btnForo.innerHTML = '<i class="bi bi-chat-dots"></i> Foro del Curso';
+                
+                // Lo insertamos después del botón de inscripción
+                btnInscribir.parentNode.appendChild(btnForo);
+                // --------------------------------------
             } else {
                 // Si no está inscrito, activamos el evento click
                 btnInscribir.textContent = "Inscribirse Ahora";
