@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <div class="alert alert-light border">
                             <h4>No has creado ningún curso aún.</h4>
                             <p>¡Anímate a compartir tu conocimiento!</p>
-                            <a href="crearCurso.php" class="btn btn-primary mt-2">+ Crear Nuevo Curso</a>
+                            <a href="adminCursos.php" class="btn btn-primary mt-2">+ Crear Nuevo Curso</a>
                         </div>
                     </div>`;
             }
