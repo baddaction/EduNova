@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 30-11-2025 a las 10:59:59
+-- Tiempo de generación: 01-12-2025 a las 07:20:15
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -185,7 +185,8 @@ CREATE TABLE `temas` (
 --
 
 INSERT INTO `temas` (`id`, `id_curso`, `titulo`, `descripcion`, `archivo`) VALUES
-(1, 5, 'Fase 1', 'Fase 1 del PIA', 'materiales/1764496417_1795166-216-Fase1-PWEB-Lab.pdf');
+(1, 5, 'Fase 1', 'Fase 1 del PIA', 'materiales/1764496417_1795166-216-Fase1-PWEB-Lab.pdf'),
+(2, 5, 'Tema 2', 'introduccion al gaming', 'materiales/1764531890_Valorant_11-29-2025_2-13-10-300.mp4');
 
 -- --------------------------------------------------------
 
@@ -337,7 +338,7 @@ ALTER TABLE `resenas`
 -- AUTO_INCREMENT de la tabla `temas`
 --
 ALTER TABLE `temas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`

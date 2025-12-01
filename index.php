@@ -1,5 +1,4 @@
 <?php 
-// 1. Definimos que estamos en la raíz
 $ruta = './'; 
 ?>
 <!DOCTYPE html>
